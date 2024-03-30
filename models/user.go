@@ -10,4 +10,5 @@ type User struct {
 	Phone string `gorm:"size:10;not null;unique" json:"phone"`
     Password string `gorm:"size:255;not null;" json:"-"`
 	Avatar string `json:"avatar"`
+	Role []Role
 }
