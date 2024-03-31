@@ -4,6 +4,7 @@ import "gorm.io/gorm"
 
 type Company struct {
 	gorm.Model
+	ID uint `gorm:"primary Key;autoIncrement" json:"id"`
 	RegNum string `gorm:"size:255;not null;unique" json:"regnum"`
 	Name string `gorm:"size:255;not null;" json:"name"`
 	Description string `json:"description"`
