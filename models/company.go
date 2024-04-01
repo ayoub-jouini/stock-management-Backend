@@ -1,6 +1,9 @@
 package model
 
-import "gorm.io/gorm"
+import (
+	"diary_api/database"
+	"gorm.io/gorm"
+)
 
 type Company struct {
 	gorm.Model
@@ -14,4 +17,12 @@ type Company struct {
 	Country string `gorm:"size:255;" json:"country"`
 	Phone string `gorm:"size:255;" json:"phone"`
 	Logo string	`gorm:"size:255;" json:"logo"`
+}
+
+func (company * Company) save() (*Company, error) {
+	err := database.Database.Create(&company).error
+	if err != nil {
+		return &Company{}, err
+	}
+	return company, nil
 }
