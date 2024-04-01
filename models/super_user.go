@@ -4,5 +4,7 @@ import "gorm.io/gorm"
 
 type SuperUser struct {
 	gorm.Model
-	UserID User
+	UserID uint `gorm:"primaryKey"`
+	
+	User User `gorm:"foreignKey:UserID"`
 }
