@@ -18,6 +18,10 @@ type Company struct {
 	Country string `gorm:"size:255;" json:"country"`
 	Phone string `gorm:"size:255;" json:"phone"`
 	Logo string	`gorm:"size:255;" json:"logo"`
+	Admin uint
+	Employee []*User `gorm:"foreignKey:CompanyID"`
+
+	User User `gorm:"foreignKey:Admin;references:ID"`
 }
 
 func (company *Company) Save() (*Company, error) {
