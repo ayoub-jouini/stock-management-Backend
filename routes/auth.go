@@ -5,6 +5,14 @@ import (
 	"stock_management/controllers"
 )
 
+type AuthRouteController struct {
+	AuthControllers controllers.AuthControllers
+}
+
+func AuthRoutesInit(authController controllers.AuthControllers) AuthRouteController {
+	return AuthRouteController{authController}
+}
+
 func AuthRoutes(routerGroup *gin.RouterGroup) {
 	
 	router := routerGroup.Group("auth")

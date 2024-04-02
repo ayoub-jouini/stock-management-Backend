@@ -7,20 +7,41 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var (
+	AuthController controllers.AuthControllers
+	AuthRouteController routes.AuthRouteController
+
+	CompanyController      controllers.CompanyControllers
+	CompanyRouteController routes.CompanyRouteController
+)
+
+func init() {
+	//check ken yetfas5ou wala yo9o3dou 
+	migrate.LoadEnv()
+	migrate.LoadDatabase()
+
+	CompanyController = controllers.CompanyControllersInit()
+	CompanyRouteController = routes.CompanyRoutesInit(CompanyController)
+
+	AuthController = controllers.CompanyControllersInit()
+	AuthRouteController = routes.CompanyRoutesInit(AuthController)
+}
+
 func main() {
 	migrate.LoadEnv()
 	migrate.LoadDatabase()
+
 	serverApplication()
 }
 
 func serverApplication() {
 	router := gin.Default()
 
-	routes.AuthRoutes(router)
+	AuthRouteController.AuthRoutes(router)
 
 	protectedRoutes := router.Group("/api")
 
-	routes.CompanyRoutes(protectedRoutes)
+	CompanyRouteController.CompanyRoutes(protectedRoutes)
 
 	router.Run(":8000")
 	fmt.Println("Server running on port 8000")

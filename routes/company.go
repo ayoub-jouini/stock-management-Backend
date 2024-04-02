@@ -6,15 +6,23 @@ import (
 	"stock_management/middlewares"
 )
 
-func CompanyRoutes(routerGroup *gin.RouterGroup) {
+type CompanyRouteController struct {
+	companyController controllers.CompanyController
+}
+
+func CompanyRoutesInit(companyController controllers.CompanyController) CompanyRouteController {
+	return CompanyRouteController{companyController}
+}
+
+func (ctr CompanyRouteController) CompanyRoutes(routerGroup *gin.RouterGroup) {
 	
 	router := routerGroup.Group("company")
 
 	router.Use(middlewares.JWTAuthMiddleware())
 
-	router.GET("/", controllers.GetAllCompanies)
+	router.GET("/", ctr.companyController.GetAllCompanies)
 
-	router.GET("/:id", controllers.GetCompanyByID)
+	router.GET("/:id", ctr.companyController.GetCompanyByID)
 
-	router.POST("/", controllers.AddCompany)
+	router.POST("/", ctr.companyController.AddCompany)
 }

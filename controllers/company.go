@@ -5,9 +5,18 @@ import (
 	"strconv"
 	"stock_management/models"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
-func GetAllCompanies(context *gin.Context) {
+type CompanyControllers struct {
+	DB *gorm.DB
+}
+
+func CompanyControllersInit(DB *gorm.DB) PostController {
+	return PostController{DB}
+}
+
+func (Ctr *CompanyControllers) GetAllCompanies(context *gin.Context) {
 	var page = context.DefaultQuery("page", "1")
 	var limit = context.DefaultQuery("limit", "10")
 
@@ -17,7 +26,7 @@ func GetAllCompanies(context *gin.Context) {
 
 	var companies []models.Company
 
-	err := database.Database.Find(&companies).Error
+	err := Ctr.DB.Find(&companies).Error
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -25,11 +34,11 @@ func GetAllCompanies(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": companies})
 }
 
-func GetCompanyByID(context *gin.Context) {
+func (Ctr *CompanyControllers) GetCompanyByID(context *gin.Context) {
 	companyID := context.Param("id")
 
 	var company models.Company
-	err := database.Database.Preload("Employees").Preload("Admin").Find($company, "ID = ?", companyID).Error
+	err := Ctr.DB.Preload("Employees").Preload("Admin").Find($company, "ID = ?", companyID).Error
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -37,7 +46,7 @@ func GetCompanyByID(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": company})
 }
 
-func AddCompany(context *gin.Context) {
+func (Ctr *CompanyControllers) AddCompany(context *gin.Context) {
 	var input models.Company
 	if err := context.ShouldBindJSON(&input); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -56,7 +65,7 @@ func AddCompany(context *gin.Context) {
 		Logo: input.Logo,
 	}
 
-	savedCompany, err := company.Save()
+	savedCompany, err := Ctr.DB.Create(&company)
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
