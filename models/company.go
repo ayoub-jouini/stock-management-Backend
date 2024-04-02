@@ -19,7 +19,7 @@ type Company struct {
 	Phone string `gorm:"size:255;" json:"phone"`
 	Logo string	`gorm:"size:255;" json:"logo"`
 	Admin uint
-	Employee []*User `gorm:"foreignKey:CompanyID"`
+	Employees []*User `gorm:"foreignKey:CompanyID"`
 
 	User User `gorm:"foreignKey:Admin;references:ID"`
 }

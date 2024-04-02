@@ -17,6 +17,10 @@ type User struct {
     Password string `gorm:"size:255;not null;" json:"-"`
 	Avatar string `json:"avatar"`
 	Role []Role `gorm:"foreignKey:UserID"`
+	
+	CompanyID uint 
+
+	Company Company `gorm:"foreignKey:CompanyID;references:ID"`
 }
 
 func (user *User) Save() (*User, error) {
