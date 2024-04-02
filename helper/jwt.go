@@ -1,20 +1,21 @@
 package helper
 
 import (
-    "diary_api/model"
-    "errors"
-    "fmt"
-    "os"
-    "strconv"
-    "strings"
-    "time"
-    "github.com/gin-gonic/gin"
-    "github.com/golang-jwt/jwt/v4"
+	"errors"
+	"fmt"
+	"os"
+	"stock_management/models"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 var privateKey = []byte(os.Getenv("JWT_PRIVATE_KEY"))
 
-func GenerateJWT(user model.User) (string, error) {
+func GenerateJWT(user models.User) (string, error) {
 	tokenTTL, _ := strconv.Atoi(os.Getenv("TOKEN_TTL"))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id": user.ID,
@@ -37,32 +38,30 @@ func ValidateJWT(context *gin.Context) error {
 	return errors.New("invalid token provided")
 }
 
-func CurrentUser(context *gin.Context) (model.User, error) {
+func CurrentUser(context *gin.Context) (models.User, error) {
 	err := ValidateJWT(context)
 	if err != nil {
-		return model.User{}, err
+		return models.User{}, err
 	}
-	token, _ := getToken(Context)
+	token, _ := getToken(context)
 	claims, _ :=token.Claims.(jwt.MapClaims)
-	userId := uint(claims["id"].(float64))
+	userID := uint(claims["id"].(float64))
 
-	user, err := model.FindUserByID(userID)
+	user, err := models.FindUserById(userID)
 	if err != nil {
-		return != nil {
-			return model.User{}, err
-		}
-		return user, nil
+		return models.User{}, err
 	}
+	return user, nil
 }
 
 func getToken(context *gin.Context) (*jwt.Token, error) {
-	tokenString := getTokenFromRequest(conetxt)
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error)) {
-		if _, ok := token.Method.(*jwt.SigninMethodHMAC); !ok {
+	tokenString := getTokenFromRequest(context)
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		} 
 		return privateKey, nil
-	}
+	})
 	return token, err
 }
 

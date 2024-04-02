@@ -1,4 +1,4 @@
-package model
+package models
 
 import "gorm.io/gorm"
 
@@ -7,6 +7,6 @@ type CompanyAdmin struct {
 	UserID uint `gorm:"primary Key"`
 	CompanyID uint `gorm:"primary Key"`
 
-	User User `gorm:"foreignKey:UserID"`
-	Company Company `gorm:"foreignKey:CompanyID"`
+	User User `gorm:"foreignKey:UserID;references:ID"`
+	Company Company `gorm:"foreignKey:CompanyID;references:ID"`
 }

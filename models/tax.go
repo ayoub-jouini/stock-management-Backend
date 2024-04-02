@@ -1,4 +1,4 @@
-package model
+package models
 
 import "gorm.io/gorm"
 
@@ -10,5 +10,5 @@ type Tax struct {
 	Value string `json:"value"`
 	CompanyID uint 
 	
-	Company Company `gorm:"foreignKey:CompanyID"`
+	Company Company `gorm:"foreignKey:CompanyID;references:ID"`
 }

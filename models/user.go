@@ -1,11 +1,10 @@
-package model
+package models
 
-import  (
-    "diary_api/database"
-    "golang.org/x/crypto/bcrypt"
-    "gorm.io/gorm"
-    "html"
-    "strings"
+import (
+	"stock_management/database"
+
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 type User struct {
@@ -17,11 +16,11 @@ type User struct {
 	Phone string `gorm:"size:10;not null;unique" json:"phone"`
     Password string `gorm:"size:255;not null;" json:"-"`
 	Avatar string `json:"avatar"`
-	Role []Role
+	Role []Role `gorm:"foreignKey:UserID"`
 }
 
 func (user *User) Save() (*User, error) {
-	err :=database.Database.Create(&user).error
+	err :=database.Database.Create(&user).Error
 	if err != nil {
 		return &User{}, err
 	}
@@ -38,7 +37,7 @@ func (user *User) BeforeSava(*gorm.DB) error {
 }
 
 func (user *User) ValidatePassword(password string) error {
-	return bcrypt.CompareHashAndPassword([]byte(user.Passowrd))
+	return bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 }
 
 func FindUserByEmail(email string) (User, error) {
@@ -50,7 +49,7 @@ func FindUserByEmail(email string) (User, error) {
 	return user, nil
 }
 
-func FindUserById(id unit) (User, error) {
+func FindUserById(id uint) (User, error) {
 	var user User
 	err := database.Database.Preload("Role").Where("ID=?", id).Find(&user).Error
 	if err != nil {

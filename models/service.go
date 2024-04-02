@@ -1,4 +1,4 @@
-package model
+package models
 
 import "gorm.io/gorm"
 
@@ -11,7 +11,12 @@ type Service struct {
 	Description string `json:"description"`
 	Price float32 `json:"price"`
 	State string `json:"state"`
-	
-	Company Company `gorm:"foreignKey:CompnayID"`
-	Category Category `gorm:"foreignKey:CategoryID"`
+
+	BillID uint
+	EstimationDocID uint
+
+	Bill Bill `gorm:"foreignKey:BillID;references:ID"`
+	EstimationDoc EstimationDoc `gorm:"foreignKey:EstimationDocID;references:ID"`
+	Company Company `gorm:"foreignKey:CompanyID;references:ID"`
+	Category Category `gorm:"foreignKey:CategoryID;references:ID"`
 }

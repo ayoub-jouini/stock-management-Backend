@@ -1,4 +1,4 @@
-package model
+package models
 
 import "gorm.io/gorm"
 
@@ -11,5 +11,5 @@ type Client struct {
 	Description string `json:"description"`
 	Avatar string `json:"avatar"`
 
-	Compnay Compnay `gorm:"foreignKey:CompnayID"`
+	Compnay Company `gorm:"foreignKey:CompanyID;references:ID"`
 }

@@ -1,4 +1,4 @@
-package model
+package models
 
 import "gorm.io/gorm"
 
@@ -9,5 +9,5 @@ type Category struct {
 	Name string `gorm:"size:255;not null;unique" json:"name"`
 	Description string `json:"description"`
 
-	Company Company `gorm:"foreignKey:CompanyID"`
+	Company Company `gorm:"foreignKey:CompanyID;references:ID"`
 }

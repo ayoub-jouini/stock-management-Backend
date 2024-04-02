@@ -1,6 +1,6 @@
-package model
+package models
 
-type authenticationInput struct {
-	Email string `json:"email" binding:"required"`
+type AuthenticationInput struct {
+	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }

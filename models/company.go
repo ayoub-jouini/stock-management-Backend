@@ -1,7 +1,8 @@
-package model
+package models
 
 import (
-	"diary_api/database"
+	"stock_management/database"
+
 	"gorm.io/gorm"
 )
 
@@ -19,8 +20,8 @@ type Company struct {
 	Logo string	`gorm:"size:255;" json:"logo"`
 }
 
-func (company * Company) save() (*Company, error) {
-	err := database.Database.Create(&company).error
+func (company *Company) Save() (*Company, error) {
+	err := database.Database.Create(&company).Error
 	if err != nil {
 		return &Company{}, err
 	}

@@ -1,4 +1,4 @@
-package model
+package models
 
 import (
 	"time"
@@ -12,9 +12,9 @@ type EstimationDoc struct {
 	CompanyID uint `gorm:"primary Key"`
 	ClientID uint
 	DueDate time.Time `gorm:"not null" json:"duedate"`
-	Product []Product
-	Service []Service
+	Product []*Product `gorm:"foreignKey:EstimationDocID"`
+	Service []*Service `gorm:"foreignKey:EstimationDocID"`
 
-	Company Compnay `gorm:"foreignKey:CompanyID"`
-	Client Client `gorm:"foreignKey:ClientID"`
+	Company Company `gorm:"foreignKey:CompanyID;references:ID"`
+	Client Client `gorm:"foreignKey:ClientID;references:ID"`
 }

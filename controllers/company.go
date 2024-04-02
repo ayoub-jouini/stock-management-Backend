@@ -1,41 +1,41 @@
 package controllers
 
 import (
-    "diary_api/helper"
-    "diary_api/model"
-    "github.com/gin-gonic/gin"
-    "net/http"
+	"net/http"
+	"stock_management/models"
+
+	"github.com/gin-gonic/gin"
 )
 
 func GellAllCompanies(context *gin.Context) {}
 
 func AddCompany(context *gin.Context) {
-	var company model.Company
-	if err := context.ShouldBindJSON(&company); err != nil {
+	var body models.Company
+	if err := context.ShouldBindJSON(&body); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	user, err := helper.CurrentUser(context)
+	// user, err := helper.CurrentUser(context)
 
-	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	// if err != nil {
+	// 	context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
 
-	company := model.Company {
+	body = models.Company {
 		RegNum: body.RegNum,
 		Name: body.Name,
 		Description: body.Description,
 		Email: body.Email,
 		Address: body.Address,
 		City: body.City,
-		Country: body.Country
-		Phone: body.Phone
-		Logo: body.Logo
+		Country: body.Country,
+		Phone: body.Phone,
+		Logo: body.Logo,
 	}
 
-	savedCompany, err := company.save()
+	savedCompany, err := body.Save()
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

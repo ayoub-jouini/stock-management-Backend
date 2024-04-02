@@ -1,4 +1,4 @@
-package model
+package models
 
 import (
 	"time"
@@ -12,9 +12,9 @@ type Bill struct {
 	CompanyID uint `gorm:"primary Key"`
 	ClientID uint
 	DueDate time.Time `gorm:"not null" json:"duedate"`
-	Product []Product
-	Service []Service
+	Product []*Product `gorm:"foreignKey:BillID"`
+	Service []*Service `gorm:"foreignKey:BillID"`
 
-	Company Company `gorm:"foreignKey:CompanyID"`
-	Clinet Client `gorm:"foreignKey:ClientID"`
+	Company Company `gorm:"foreignKey:CompanyID;references:ID"`
+	Clinet Client `gorm:"foreignKey:ClientID;references:ID"`
 }
