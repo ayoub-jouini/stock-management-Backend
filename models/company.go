@@ -21,7 +21,7 @@ type Company struct {
 	Admin uint
 	Employees []*User `gorm:"foreignKey:CompanyID"`
 
-	User User `gorm:"foreignKey:Admin;references:ID"`
+	User *User `gorm:"foreignKey:Admin;references:ID"`
 }
 
 func (company *Company) Save() (*Company, error) {

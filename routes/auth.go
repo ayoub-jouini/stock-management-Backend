@@ -1,8 +1,9 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
 	"stock_management/controllers"
+
+	"github.com/gin-gonic/gin"
 )
 
 type AuthRouteController struct {
@@ -13,11 +14,11 @@ func AuthRoutesInit(authController controllers.AuthControllers) AuthRouteControl
 	return AuthRouteController{authController}
 }
 
-func AuthRoutes(routerGroup *gin.RouterGroup) {
+func (ctr AuthRouteController) AuthRoutes(routerGroup *gin.RouterGroup) {
 	
 	router := routerGroup.Group("auth")
 
-	router.POST("/register", controllers.Register)
+	router.POST("/register", ctr.AuthControllers.Register)
 	
-	router.POST("/login", controllers.Login)
+	router.POST("/login", ctr.AuthControllers.Login)
 }

@@ -2,8 +2,9 @@ package controllers
 
 import (
 	"net/http"
-	"strconv"
 	"stock_management/models"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -12,8 +13,8 @@ type CompanyControllers struct {
 	DB *gorm.DB
 }
 
-func CompanyControllersInit(DB *gorm.DB) PostController {
-	return PostController{DB}
+func CompanyControllersInit(DB *gorm.DB) CompanyControllers {
+	return CompanyControllers{DB}
 }
 
 func (Ctr *CompanyControllers) GetAllCompanies(context *gin.Context) {
@@ -26,7 +27,7 @@ func (Ctr *CompanyControllers) GetAllCompanies(context *gin.Context) {
 
 	var companies []models.Company
 
-	err := Ctr.DB.Find(&companies).Error
+	err := Ctr.DB.Limit(intLimit).Offset(offset).Find(&companies).Error
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -38,7 +39,7 @@ func (Ctr *CompanyControllers) GetCompanyByID(context *gin.Context) {
 	companyID := context.Param("id")
 
 	var company models.Company
-	err := Ctr.DB.Preload("Employees").Preload("Admin").Find($company, "ID = ?", companyID).Error
+	err := Ctr.DB.Preload("Employees").Preload("Admin").First(&company, "ID = ?", companyID).Error
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -65,12 +66,12 @@ func (Ctr *CompanyControllers) AddCompany(context *gin.Context) {
 		Logo: input.Logo,
 	}
 
-	savedCompany, err := Ctr.DB.Create(&company)
+	res := Ctr.DB.Create(&company)
 
-	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if res.Error != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": res.Error.Error()})
 		return
 	}
 
-	context.JSON(http.StatusCreated, gin.H{"data": savedCompany})
+	context.JSON(http.StatusCreated, gin.H{"data": company})
 }

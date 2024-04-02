@@ -4,8 +4,9 @@ import (
 	"net/http"
 	"stock_management/helper"
 	"stock_management/models"
-	"gorm.io/gorm"
+
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type AuthControllers struct {
@@ -34,14 +35,14 @@ func (ctr *AuthControllers) Register(context *gin.Context) {
 		// Role: body.Role
 	}
 
-	savedUser, err := ctr.DB.Create(&user)
+	res := ctr.DB.Create(&user)
 
-	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if res.Error != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": res.Error.Error()})
 		return
 	}
 
-	context.JSON(http.StatusCreated, gin.H{"user": savedUser})
+	context.JSON(http.StatusCreated, gin.H{"user": user})
 }
 
 func (ctr *AuthControllers) Login(context *gin.Context) {

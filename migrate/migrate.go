@@ -2,9 +2,10 @@ package migrate
 
 import (
 	"log"
-	"github.com/joho/godotenv"
 	"stock_management/database"
 	"stock_management/models"
+
+	"github.com/joho/godotenv"
 )
 
 func LoadEnv() {
@@ -23,8 +24,6 @@ func LoadDatabase() {
 	database.Database.AutoMigrate(&models.Service{})
 	database.Database.AutoMigrate(&models.Client{})
 	database.Database.AutoMigrate(&models.Role{})
-	database.Database.AutoMigrate(&models.SimpleUser{})
-	database.Database.AutoMigrate(&models.CompanyAdmin{})
 	database.Database.AutoMigrate(&models.SuperUser{})
 	database.Database.AutoMigrate(&models.EstimationDoc{})
 	database.Database.AutoMigrate(&models.Bill{})

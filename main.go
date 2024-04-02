@@ -2,8 +2,11 @@ package main
 
 import (
 	"fmt"
-	"stock_management/routes"
+	"stock_management/controllers"
+	"stock_management/database"
 	"stock_management/migrate"
+	"stock_management/routes"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,29 +23,26 @@ func init() {
 	migrate.LoadEnv()
 	migrate.LoadDatabase()
 
-	CompanyController = controllers.CompanyControllersInit()
-	CompanyRouteController = routes.CompanyRoutesInit(CompanyController)
+	AuthController = controllers.AuthControllersInit(database.Database)
+	AuthRouteController = routes.AuthRoutesInit(AuthController)
 
-	AuthController = controllers.CompanyControllersInit()
-	AuthRouteController = routes.CompanyRoutesInit(AuthController)
+	CompanyController = controllers.CompanyControllersInit(database.Database)
+	CompanyRouteController = routes.CompanyRoutesInit(CompanyController)
 }
 
 func main() {
-	migrate.LoadEnv()
-	migrate.LoadDatabase()
-
 	serverApplication()
 }
 
 func serverApplication() {
-	router := gin.Default()
+	server := gin.Default()
+
+	router := server.Group("/api")
 
 	AuthRouteController.AuthRoutes(router)
 
-	protectedRoutes := router.Group("/api")
+	CompanyRouteController.CompanyRoutes(router)
 
-	CompanyRouteController.CompanyRoutes(protectedRoutes)
-
-	router.Run(":8000")
+	server.Run(":8000")
 	fmt.Println("Server running on port 8000")
 }

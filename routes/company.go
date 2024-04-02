@@ -1,16 +1,17 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
 	"stock_management/controllers"
 	"stock_management/middlewares"
+
+	"github.com/gin-gonic/gin"
 )
 
 type CompanyRouteController struct {
-	companyController controllers.CompanyController
+	companyController controllers.CompanyControllers
 }
 
-func CompanyRoutesInit(companyController controllers.CompanyController) CompanyRouteController {
+func CompanyRoutesInit(companyController controllers.CompanyControllers) CompanyRouteController {
 	return CompanyRouteController{companyController}
 }
 
