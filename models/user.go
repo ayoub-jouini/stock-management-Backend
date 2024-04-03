@@ -61,3 +61,5 @@ func FindUserById(id uint) (User, error) {
 	}
 	return user, nil
 }
+
+func FindAllUsers() ([]User, error) {}

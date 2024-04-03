@@ -35,10 +35,10 @@ func (ctr *AuthControllers) Register(context *gin.Context) {
 		// Role: body.Role
 	}
 
-	res := ctr.DB.Create(&user)
+	res, err := user.Save()
 
-	if res.Error != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": res.Error.Error()})
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

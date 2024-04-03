@@ -31,3 +31,27 @@ func (company *Company) Save() (*Company, error) {
 	}
 	return company, nil
 }
+
+func FindCompanyByID(id uint) (Company, error) {
+	var company Company
+	err := database.Database.Preload("Employees").Preload("Admin").Where("ID=?", id).Find(&company).Error
+	if err != nil {
+		return company{}, err
+	}
+	return company, nil
+}
+
+func FindAllCompanies(page int, limit int) ([]Company, error) {
+	
+	var companies []models.Company
+	
+	intPage, _ := strconv.Atoi(page)
+	intLimit, _ := strconv.Atoi(limit)
+	offset := (intPage - 1) * intLimit
+
+	err := Ctr.DB.Limit(intLimit).Offset(offset).Find(&companies).Error
+	if err != nil {
+		return companies{}, err
+	}
+	return companies, nil
+}
