@@ -11,9 +11,10 @@ func GetAllCompanies(context *gin.Context) {
 	var page string = context.DefaultQuery("page", "1")
 	var limit string = context.DefaultQuery("limit", "10")
 
-	companies, err := models.FindAllCompanies(page, limit)
+	companies, err := models.FindAllCompanies(&page, &limit)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	context.JSON(http.StatusOK, gin.H{"data": companies})

@@ -33,8 +33,8 @@ func (company *Company) Save() (*Company, error) {
 	return company, nil
 }
 
-func FindCompanyByID(id string) (*Company, error) {
-	var company *Company
+func FindCompanyByID(id string) (Company, error) {
+	var company Company
 	err := database.Database.Preload("Employees").Preload("Admin").Where("ID=?", id).Find(&company).Error
 	if err != nil {
 		return company, err
@@ -42,12 +42,12 @@ func FindCompanyByID(id string) (*Company, error) {
 	return company, nil
 }
 
-func FindAllCompanies(page string, limit string) (*[]Company, error) {
+func FindAllCompanies(page *string, limit *string) ([]Company, error) {
 	
-	var companies *[]Company
+	var companies []Company
 	
-	intPage, _ := strconv.Atoi(page)
-	intLimit, _ := strconv.Atoi(limit)
+	intPage, _ := strconv.Atoi(*page)
+	intLimit, _ := strconv.Atoi(*limit)
 	offset := (intPage - 1) * intLimit
 
 	err := database.Database.Limit(intLimit).Offset(offset).Find(&companies).Error
