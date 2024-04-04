@@ -2,6 +2,7 @@ package models
 
 import (
 	"stock_management/database"
+	"strconv"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -53,7 +54,7 @@ func FindUserByEmail(email string) (User, error) {
 	return user, nil
 }
 
-func FindUserById(id uint) (User, error) {
+func FindUserById(id string) (User, error) {
 	var user User
 	err := database.Database.Preload("Role").Where("ID=?", id).Find(&user).Error
 	if err != nil {
@@ -62,4 +63,16 @@ func FindUserById(id uint) (User, error) {
 	return user, nil
 }
 
-// func FindAllUsers() ([]User, error) {}
+func FindAllUsers(page *string, limit *string) ([]User, error) {
+	var users []User
+
+	intPage, _ := strconv.Atoi(*page)
+	intLimit, _ := strconv.Atoi(*limit)
+	offset := (intPage - 1) * intLimit
+
+	err := database.Database.Limit(intLimit).Offset(offset).Find(&users).Error
+	if err != nil {
+		return users, err
+	}
+	return users, nil
+}

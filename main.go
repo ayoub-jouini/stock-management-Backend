@@ -25,6 +25,8 @@ func serverApplication() {
 
 	routes.AuthRoutes(router)
 
+	routes.UserRoutes(router)
+
 	routes.CompanyRoutes(router)
 
 	server.Run(":8000")
