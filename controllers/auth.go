@@ -6,18 +6,9 @@ import (
 	"stock_management/models"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-type AuthControllers struct {
-	DB *gorm.DB
-}
-
-func AuthControllersInit(DB *gorm.DB) AuthControllers {
-	return AuthControllers{DB}
-}
-
-func (ctr *AuthControllers) Register(context *gin.Context) {
+func Register(context *gin.Context) {
 	var body models.User
 
 	if err := context.ShouldBindJSON(&body); err != nil {
@@ -32,7 +23,7 @@ func (ctr *AuthControllers) Register(context *gin.Context) {
 		Phone: body.Phone,
 		Password: body.Password,
 		Avatar: body.Avatar,
-		// Role: body.Role
+		Role: body.Role,
 	}
 
 	_, err := user.Save()
@@ -45,7 +36,7 @@ func (ctr *AuthControllers) Register(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"user": user})
 }
 
-func (ctr *AuthControllers) Login(context *gin.Context) {
+func Login(context *gin.Context) {
 	var input models.AuthenticationInput
 
 	if err := context.ShouldBindJSON(&input); err != nil {

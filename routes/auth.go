@@ -6,19 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AuthRouteController struct {
-	AuthControllers controllers.AuthControllers
-}
-
-func AuthRoutesInit(authController controllers.AuthControllers) AuthRouteController {
-	return AuthRouteController{authController}
-}
-
-func (ctr AuthRouteController) AuthRoutes(routerGroup *gin.RouterGroup) {
+func AuthRoutes(routerGroup *gin.RouterGroup) {
 	
 	router := routerGroup.Group("auth")
 
-	router.POST("/register", ctr.AuthControllers.Register)
+	router.POST("/register", controllers.Register)
 	
-	router.POST("/login", ctr.AuthControllers.Login)
+	router.POST("/login", controllers.Login)
 }

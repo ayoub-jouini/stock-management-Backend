@@ -5,18 +5,9 @@ import (
 	"stock_management/models"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-type CompanyControllers struct {
-	DB *gorm.DB
-}
-
-func CompanyControllersInit(DB *gorm.DB) CompanyControllers {
-	return CompanyControllers{DB}
-}
-
-func (Ctr *CompanyControllers) GetAllCompanies(context *gin.Context) {
+func GetAllCompanies(context *gin.Context) {
 	var page string = context.DefaultQuery("page", "1")
 	var limit string = context.DefaultQuery("limit", "10")
 
@@ -28,7 +19,7 @@ func (Ctr *CompanyControllers) GetAllCompanies(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": companies})
 }
 
-func (Ctr *CompanyControllers) GetCompanyByID(context *gin.Context) {
+func GetCompanyByID(context *gin.Context) {
 	companyID := context.Param("id")
 
 	company, err := models.FindCompanyByID(companyID)
@@ -40,7 +31,7 @@ func (Ctr *CompanyControllers) GetCompanyByID(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"data": company})
 }
 
-func (Ctr *CompanyControllers) AddCompany(context *gin.Context) {
+func AddCompany(context *gin.Context) {
 	var input models.Company
 	if err := context.ShouldBindJSON(&input); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
