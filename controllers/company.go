@@ -3,7 +3,6 @@ package controllers
 import (
 	"net/http"
 	"stock_management/models"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -18,8 +17,8 @@ func CompanyControllersInit(DB *gorm.DB) CompanyControllers {
 }
 
 func (Ctr *CompanyControllers) GetAllCompanies(context *gin.Context) {
-	var page = context.DefaultQuery("page", "1")
-	var limit = context.DefaultQuery("limit", "10")
+	var page string = context.DefaultQuery("page", "1")
+	var limit string = context.DefaultQuery("limit", "10")
 
 	companies, err := models.FindAllCompanies(page, limit)
 	if err != nil {
@@ -32,7 +31,7 @@ func (Ctr *CompanyControllers) GetAllCompanies(context *gin.Context) {
 func (Ctr *CompanyControllers) GetCompanyByID(context *gin.Context) {
 	companyID := context.Param("id")
 
-	company, err := models.FindCompanyByID(uint(companyID))
+	company, err := models.FindCompanyByID(companyID)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -60,7 +59,7 @@ func (Ctr *CompanyControllers) AddCompany(context *gin.Context) {
 		Logo: input.Logo,
 	}
 
-	res, err := company.Save()
+	_, err := company.Save()
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

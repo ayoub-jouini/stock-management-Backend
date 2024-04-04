@@ -2,6 +2,7 @@ package models
 
 import (
 	"stock_management/database"
+	"strconv"
 
 	"gorm.io/gorm"
 )
@@ -32,26 +33,26 @@ func (company *Company) Save() (*Company, error) {
 	return company, nil
 }
 
-func FindCompanyByID(id uint) (Company, error) {
-	var company Company
+func FindCompanyByID(id string) (*Company, error) {
+	var company *Company
 	err := database.Database.Preload("Employees").Preload("Admin").Where("ID=?", id).Find(&company).Error
 	if err != nil {
-		return company{}, err
+		return company, err
 	}
 	return company, nil
 }
 
-func FindAllCompanies(page int, limit int) ([]Company, error) {
+func FindAllCompanies(page string, limit string) (*[]Company, error) {
 	
-	var companies []models.Company
+	var companies *[]Company
 	
 	intPage, _ := strconv.Atoi(page)
 	intLimit, _ := strconv.Atoi(limit)
 	offset := (intPage - 1) * intLimit
 
-	err := Ctr.DB.Limit(intLimit).Offset(offset).Find(&companies).Error
+	err := database.Database.Limit(intLimit).Offset(offset).Find(&companies).Error
 	if err != nil {
-		return companies{}, err
+		return companies, err
 	}
 	return companies, nil
 }

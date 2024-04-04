@@ -35,7 +35,7 @@ func (ctr *AuthControllers) Register(context *gin.Context) {
 		// Role: body.Role
 	}
 
-	res, err := user.Save()
+	_, err := user.Save()
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
