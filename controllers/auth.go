@@ -16,7 +16,7 @@ func Register(context *gin.Context) {
 		return
 	}
 
-	user := models.User {
+	user  := models.User {
 		FirstName: body.FirstName,
 		LastName: body.LastName,
 		Email: body.Email,
@@ -26,9 +26,11 @@ func Register(context *gin.Context) {
 		Role: body.Role,
 	}
 
-	_, err := user.Save()
+	if err := user.BeforeSava(); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
+	}
 
-	if err != nil {
+	if _, err := user.Save(); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -45,16 +47,14 @@ func Login(context *gin.Context) {
 	}
 
 	user, err := models.FindUserByEmail(input.Email)
-
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	err = user.ValidatePassword(input.Password)
-
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		context.JSON(http.StatusBadRequest, gin.H{"error ": err.Error()})
 		return
 	}
 

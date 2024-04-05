@@ -15,24 +15,24 @@ type User struct {
 	LastName string `gorm:"size:255;not null" json:"lastname"`
 	Email string `gorm:"size:255;not null;unique" json:"email"`
 	Phone string `gorm:"size:10;not null;unique" json:"phone"`
-    Password string `gorm:"size:255;not null;" json:"-"`
+    Password string `gorm:"not null;" json:"password"`
 	Avatar string `json:"avatar"`
 	Role []Role `gorm:"foreignKey:UserID"`
 	
-	CompanyID uint 
+	CompanyID uint `gorm:"-" json:"-"`
 
-	Company Company `gorm:"foreignKey:CompanyID;references:ID"`
+	// Company Company `gorm:"foreignKey:CompanyID;references:ID"`
 }
 
 func (user *User) Save() (*User, error) {
-	err :=database.Database.Create(&user).Error
+	err := database.Database.Create(&user).Error
 	if err != nil {
 		return &User{}, err
 	}
 	return user, nil
 }
 
-func (user *User) BeforeSava(*gorm.DB) error {
+func (user *User) BeforeSava() error {
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err

@@ -9,7 +9,6 @@ import (
 )
 
 func init() {
-	//check ken yetfas5ou wala yo9o3dou 
 	migrate.LoadEnv()
 	migrate.LoadDatabase()
 }
