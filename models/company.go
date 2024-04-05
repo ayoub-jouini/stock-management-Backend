@@ -17,12 +17,12 @@ type Company struct {
 	Address string `gorm:"size:255;" json:"address"`
 	City string `gorm:"size:255;" json:"city"`
 	Country string `gorm:"size:255;" json:"country"`
-	Phone string `gorm:"size:255;" json:"phone"`
-	Logo string	`gorm:"size:255;" json:"logo"`
-	Admin uint
-	Employees []*User `gorm:"foreignKey:CompanyID"`
+	Phone string `gorm:"size:8;" json:"phone"`
+	Logo string	`json:"logo"`
+	Admin uint `json:"admin"`
+	Employees []*User `gorm:"foreignkey:CompanyID"`
 
-	User *User `gorm:"foreignKey:Admin;references:ID"`
+	User *User `gorm:"foreignkey:Admin;references:ID" json:"-"`
 }
 
 func (company *Company) Save() (*Company, error) {

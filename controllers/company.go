@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"stock_management/helper"
 	"stock_management/models"
 
 	"github.com/gin-gonic/gin"
@@ -39,6 +40,11 @@ func AddCompany(context *gin.Context) {
 		return
 	}
 
+	user, err := helper.CurrentUser(context)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
 	company := models.Company {
 		RegNum: input.RegNum,
 		Name: input.Name,
@@ -49,9 +55,10 @@ func AddCompany(context *gin.Context) {
 		Country: input.Country,
 		Phone: input.Phone,
 		Logo: input.Logo,
+		Admin: user.ID,
 	}
 
-	_, err := company.Save()
+	_, err = company.Save()
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
