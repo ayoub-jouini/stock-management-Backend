@@ -66,3 +66,74 @@ func AddCompany(context *gin.Context) {
 
 	context.JSON(http.StatusCreated, gin.H{"data": company})
 }
+
+func UpdateCompanyById(context *gin.Context) {
+	var input models.Company
+	if err := context.ShouldBindJSON(&input); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	companyID := gin.Param("id")
+	company, err := models.FindCompanyByID(companyID)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := helper.CurrentUser(context)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if user.ID != company.Admin {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Not Admin"})
+		return
+	}
+
+	company.RegNum = input.RegNum,
+	company.Name = input.Name,
+	company.Description = input.Description,
+	company.Email = input.Email,
+	company.Address = input.Address,
+	company.City = input.City,
+	company.Country = input.Country,
+	company.Phone = input.Phone,
+	company.Logo = input.Logo,
+
+	if err = company.UpdateCompany(); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusCreated, gin.H{"data": company})
+}
+
+func DeleteCompanyById(context *gin.Context) {
+	companyID := gin.Param("id")
+
+	company, err := models.FindCompanyByID(companyID)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := helper.CurrentUser(context)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if user.ID != company.Admin {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Not Admin"})
+		return
+	}
+	
+	if err := Model.DeleteCompany(compnayID); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusCreated, gin.H{"message": "deleted !"})
+}
