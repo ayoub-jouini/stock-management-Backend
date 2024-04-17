@@ -29,3 +29,60 @@ func GetUserByID(context *gin.Context) {
 	}
 	context.JSON(http.StatusOK, gin.H{"data": user})
 }
+
+func UpdateUserById(context *gin.Context) {
+	userID := gin.Param("id")
+	var input models.User
+	if err := context.ShouldBindJSON(&input); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := helper.CurrentUser(context)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if user.ID != userID {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Not current user"})
+		return
+	}
+
+	user.FirstName = input.FirstName,
+	user.LastName = input.LastName,
+	user.Email = input.Email,
+	user.Phone = input.Phone,
+	user.Password = input.Password,
+	user.Avatar = input.Avatar,
+	user.Role = input.Role,
+
+	if err = user.UpdateUser(); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusCreated, gin.H{"data": user})
+}
+
+// func DeleteUserById(context *gin.Context) {
+// 	userID := gin.Param("id")
+
+// 	user, err := helper.CurrentUser(context)
+// 	if err != nil {
+// 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
+
+// 	if user.ID != company.Admin {
+// 		context.JSON(http.StatusBadRequest, gin.H{"error": "Not Admin"})
+// 		return
+// 	}
+	
+// 	if err := Model.DeleteCompany(compnayID); err != nil {
+// 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
+
+// 	context.JSON(http.StatusCreated, gin.H{"message": "deleted !"})
+// }

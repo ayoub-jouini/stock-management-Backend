@@ -76,3 +76,19 @@ func FindAllUsers(page *string, limit *string) ([]User, error) {
 	}
 	return users, nil
 }
+
+func (user *User) UpdateUser() (error) {
+	err := database.Database.Save(&user).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeleteUser(id string) (error) {
+	err := database.Database.Delete(User{}, "ID = ?", id).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
