@@ -25,39 +25,38 @@ type Company struct {
 	User *User `gorm:"foreignkey:Admin;references:ID" json:"-"`
 }
 
-func (company *Company) Save() (*Company, error) {
+type Companies []Company
+
+func (company *Company) Save() (error) {
 	err := database.Database.Create(&company).Error
 	if err != nil {
-		return &Company{}, err
+		return err
 	}
-	return company, nil
+	return nil
 }
 
-func FindCompanyByID(id string) (Company, error) {
-	var company Company
+func (company *Company) FindById(id string) (error) {
 	err := database.Database.Preload("Admin").Preload("Employees").Where("ID=?", id).Find(&company).Error
 	if err != nil {
-		return company, err
+		return err
 	}
-	return company, nil
+	return nil
 }
 
-func FindAllCompanies(page *string, limit *string) ([]Company, error) {
+func (companies Companies) FindAll(page string, limit string) (error) {
 	
-	var companies []Company
-	
-	intPage, _ := strconv.Atoi(*page)
-	intLimit, _ := strconv.Atoi(*limit)
+	intPage, _ := strconv.Atoi(page)
+	intLimit, _ := strconv.Atoi(limit)
 	offset := (intPage - 1) * intLimit
 
 	err := database.Database.Limit(intLimit).Offset(offset).Find(&companies).Error
 	if err != nil {
-		return companies, err
+		return err
 	}
-	return companies, nil
+	return nil
 }
 
-func (company *Company) UpdateCompany() (error) {
+func (company *Company) Update() (error) {
 	err := database.Database.Save(&company).Error
 	if err != nil {
 		return err
@@ -65,8 +64,8 @@ func (company *Company) UpdateCompany() (error) {
 	return nil
 }
 
-func DeleteCompany(id string) (error) {
-	err := database.Database.Delete(Company{}, "ID = ?", id).Error
+func (company Company) Delete() (error) {
+	err := database.Database.Delete(Company{}, "ID = ?", company.ID).Error
 	if err != nil {
 		return err
 	}

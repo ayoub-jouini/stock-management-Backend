@@ -13,4 +13,6 @@ func UserRoutes(routerGroup *gin.RouterGroup){
 	router.GET("/", controllers.GetAllUsers)
 
 	router.GET("/:id", controllers.GetUserByID)
+
+	router.PATCH("/:id", controllers.UpdateUserById)
 }

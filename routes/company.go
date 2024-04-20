@@ -18,4 +18,6 @@ func CompanyRoutes(routerGroup *gin.RouterGroup) {
 	router.GET("/:id", controllers.GetCompanyByID)
 
 	router.POST("/", controllers.AddCompany)
+
+	router.PATCH("/:id", controllers.UpdateCompanyById)
 }
