@@ -56,3 +56,19 @@ func FindAllCompanies(page *string, limit *string) ([]Company, error) {
 	}
 	return companies, nil
 }
+
+func (company *Company) UpdateCompany() (error) {
+	err := database.Database.Save(&company).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeleteCompany(id string) (error) {
+	err := database.Database.Delete(Company{}, "ID = ?", id).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
