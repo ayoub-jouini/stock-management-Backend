@@ -20,7 +20,7 @@ type Company struct {
 	Phone string `gorm:"size:8;" json:"phone"`
 	Logo string	`json:"logo"`
 	Admin uint `json:"admin"`
-	Employees []*User `gorm:"foreignkey:CompanyID"`
+	Employees []*User `gorm:"foreignkey:CompanyID;references:ID"`
 
 	User *User `gorm:"foreignkey:Admin;references:ID" json:"-"`
 }
@@ -35,7 +35,7 @@ func (company *Company) Save() (*Company, error) {
 
 func FindCompanyByID(id string) (Company, error) {
 	var company Company
-	err := database.Database.Preload("Employees").Preload("Admin").Where("ID=?", id).Find(&company).Error
+	err := database.Database.Preload("Admin").Preload("Employees").Where("ID=?", id).Find(&company).Error
 	if err != nil {
 		return company, err
 	}
