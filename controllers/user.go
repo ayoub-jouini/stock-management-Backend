@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
+	"stock_management/helper"
 	"stock_management/models"
 
 	"github.com/gin-gonic/gin"
@@ -31,7 +33,7 @@ func GetUserByID(context *gin.Context) {
 }
 
 func UpdateUserById(context *gin.Context) {
-	userID := gin.Param("id")
+	userID := context.Param("id")
 	var input models.User
 	if err := context.ShouldBindJSON(&input); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -44,18 +46,18 @@ func UpdateUserById(context *gin.Context) {
 		return
 	}
 
-	if user.ID != userID {
+	if fmt.Sprint(user.ID) != userID {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Not current user"})
 		return
 	}
 
-	user.FirstName = input.FirstName,
-	user.LastName = input.LastName,
-	user.Email = input.Email,
-	user.Phone = input.Phone,
-	user.Password = input.Password,
-	user.Avatar = input.Avatar,
-	user.Role = input.Role,
+	user.FirstName = input.FirstName
+	user.LastName = input.LastName
+	user.Email = input.Email
+	user.Phone = input.Phone
+	user.Password = input.Password
+	user.Avatar = input.Avatar
+	user.Role = input.Role
 
 	if err = user.UpdateUser(); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

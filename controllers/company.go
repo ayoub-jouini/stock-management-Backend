@@ -74,7 +74,7 @@ func UpdateCompanyById(context *gin.Context) {
 		return
 	}
 
-	companyID := gin.Param("id")
+	companyID := context.Param("id")
 	company, err := models.FindCompanyByID(companyID)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -92,15 +92,15 @@ func UpdateCompanyById(context *gin.Context) {
 		return
 	}
 
-	company.RegNum = input.RegNum,
-	company.Name = input.Name,
-	company.Description = input.Description,
-	company.Email = input.Email,
-	company.Address = input.Address,
-	company.City = input.City,
-	company.Country = input.Country,
-	company.Phone = input.Phone,
-	company.Logo = input.Logo,
+	company.RegNum = input.RegNum
+	company.Name = input.Name
+	company.Description = input.Description
+	company.Email = input.Email
+	company.Address = input.Address
+	company.City = input.City
+	company.Country = input.Country
+	company.Phone = input.Phone
+	company.Logo = input.Logo
 
 	if err = company.UpdateCompany(); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -111,7 +111,7 @@ func UpdateCompanyById(context *gin.Context) {
 }
 
 func DeleteCompanyById(context *gin.Context) {
-	companyID := gin.Param("id")
+	companyID := context.Param("id")
 
 	company, err := models.FindCompanyByID(companyID)
 	if err != nil {
@@ -130,7 +130,7 @@ func DeleteCompanyById(context *gin.Context) {
 		return
 	}
 	
-	if err := Model.DeleteCompany(compnayID); err != nil {
+	if err := models.DeleteCompany(companyID); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
