@@ -26,7 +26,25 @@ func serverApplication() {
 
 	routes.UserRoutes(router)
 
+	routes.BillRoutes(router)
+
+	routes.CategoryRoutes(router)
+
+	routes.ClientRoutes(router)
+
 	routes.CompanyRoutes(router)
+
+	routes.EstimationDocRoutes(router)
+
+	routes.ProductRoutes(router)
+
+	routes.RoleRoutes(router)
+
+	routes.ServiceRoutes(router)
+
+	routes.SuperUserRoutes(router)
+	
+	routes.TaxRoutes(router)
 
 	server.Run(":8000")
 	fmt.Println("Server running on port 8000")
