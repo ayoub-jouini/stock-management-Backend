@@ -73,3 +73,22 @@ func UpdateCategory(context *gin.Context) {
 	category.Description = input.Description
 
 }
+
+func DeleteCategory(context *gin.Context) {
+	var categoryId = context.Param("id")
+
+	var category models.Category
+	if err := category.FindById(categoryId); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}	
+
+	//check user company and category company
+
+	if err := category.Delete(); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"message": "Deleted!"})
+}

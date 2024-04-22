@@ -20,3 +20,49 @@ type Service struct {
 	Company Company `gorm:"foreignKey:CompanyID;references:ID"`
 	Category Category `gorm:"foreignKey:CategoryID;references:ID"`
 }
+
+type Services []Service 
+
+func (service Service) Save() (error) {
+	err := database.Database.Create(&service).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (service Service) FindById(id string) (error) {
+	err := database.Database.Preload("Company").Preload("Category").Where("ID=?", id).Find(&service).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (services Services) FindAll(page string, limit string) (error) {
+	intPage, _ := strconv.Atoi(page)
+	intLimit, _ := strconv.Atoi(limit)
+	offset := (intPage - 1) * intLimit
+
+	err := database.Database.Limit(intLimit).Offset(offset).Find(&services).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (service *Service) Update() (error) {
+	err := database.Database.Save(&service).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (service *Service) Delete() (error) {
+	err := database.Database.Delete(Service{}, "ID = ?", service.ID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
