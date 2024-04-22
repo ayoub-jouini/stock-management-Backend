@@ -8,33 +8,33 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetAllRoles(context *gin.Context) {
+func GetAllProducts(context *gin.Context) {
 	var page string = context.DefaultQuery("page", "1")
 	var limit string = context.DefaultQuery("limit", "10")
 
-	var roles models.Roles
-	if err := roles.FindAll(page, limit); err != nil {
-		context.JSON(http.StatusBadRequestn, gin.H{"error": err.Error()})
-		return
-	}
-
-	context.JSON(http.StatusOK, gin.H{"data": roles})
-}
-
-func GetRoleById(context *gin.Context) {
-	roleId := context.Param("id")
-
-	var role models.Role
-	if err := role.FindById(roleId); err != nil {
+	var products models.Products
+	if err := products.FindAll(page, limit); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{"data": role})
+	context.JSON(http.StatusOK, gin.H{"data": products})
 }
 
-func AddRole(context *gin.Context) {
-	var input models.Role
+func GetProductByID(context *gin.Context) {
+	productId := context.Param("id")
+
+	var product models.Product
+	if err := product.FindById(productId); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"data": product})
+}
+
+func AddProduct(context *gin.Context) {
+	var input models.Product
 	if err := context.ShouldBindJSON(&input); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -47,29 +47,34 @@ func AddRole(context *gin.Context) {
 
 	//check if user is authorized
 
-	role := models.Role{
+	product := models.Product{
+		CompanyID : user.CompanyID
+		CategoryID : user.CategoryID
 		Name : input.Name
 		Description : input.Description
+		Quantity : input.Quantity
+		Price : input.Price
+		State : input.State
 	}
 
-	if err = role.Save(); err != nil {
+	if err = product.Save(); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	context.JSON(http.StatusCreated, gin.H{"data": role})
+	context.JSON(http.StatusCreated, gin.H{"data": product})
 }
 
-func UpdateRole(context *gin.context) {
-	var input models.Role
+func UpdateProdcut(context *gin.Context) {
+	var input models.Product
 	if err := context.ShouldBindJSON(&input); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	roleId := context.Param("id")
-	var role models.Role
-	if err := role.FindById(roleId); err != nil {
+	productId := context.Param("id")
+	var product models.Product
+	if err := product.FindById(productId); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -82,22 +87,26 @@ func UpdateRole(context *gin.context) {
 
 	//check if user is authorized
 
-	role.Name = input.Name
-	role.Description = input.Description
+	product.CategoryID = input.CategoryID
+	product.Name = input.Name
+	product.Description = input.Description
+	product.Quantity = input.Quantity
+	product.Price = input.Price
+	product.State = input.State
 
-	if err = role.Update(); err != nil {
+	if err = product.Update(); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	context.JSON(http.StatusCreated, gin.H{"data": role})
+	context.JSON(http.StatusCreated, gin.H{"data": product})
 }
 
-func DeleteRole(context *gin.Context) {
-	roleId := context.Param("id")
+func DeleteProduct(context *gin.Context) {
+	productId := context.Param("id")
 
-	var role models.Role
-	if err := role.FindById(roleId); err != nil {
+	var product models.Product
+	if err := product.FindById(productId); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -110,7 +119,7 @@ func DeleteRole(context *gin.Context) {
 
 	//check if user is authorized
 
-	if err := role.Delete(); err != nil {
+	if err := product.Delete(); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
