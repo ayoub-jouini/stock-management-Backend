@@ -45,7 +45,7 @@ func AddCompany(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	company := models.Company {
+	company := models.Company{
 		RegNum: input.RegNum,
 		Name: input.Name,
 		Description: input.Description,
