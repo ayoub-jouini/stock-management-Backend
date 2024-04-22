@@ -13,7 +13,8 @@ func GetAllUsers(context *gin.Context) {
 	var page string = context.DefaultQuery("page", "1")
 	var limit string = context.DefaultQuery("limit", "10")
 
-	users, err := models.FindAllUsers(&page, &limit)
+	var users models.Users
+	err := users.FindAll(page, limit)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -24,7 +25,8 @@ func GetAllUsers(context *gin.Context) {
 func GetUserByID(context *gin.Context) {
 	userID := context.Param("id")
 
-	user, err := models.FindUserById(userID)
+	var user models.User
+	err := user.FindById(userID)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -59,7 +61,7 @@ func UpdateUserById(context *gin.Context) {
 	user.Avatar = input.Avatar
 	user.Role = input.Role
 
-	if err = user.UpdateUser(); err != nil {
+	if err = user.Update(); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

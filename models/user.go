@@ -24,6 +24,8 @@ type User struct {
 	// Company Company `gorm:"foreignKey:CompanyID;references:ID"`
 }
 
+type Users []User
+
 func (user *User) Save() (*User, error) {
 	err := database.Database.Create(&user).Error
 	if err != nil {
@@ -45,39 +47,35 @@ func (user *User) ValidatePassword(password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 }
 
-func FindUserByEmail(email string) (User, error) {
-	var user User
+func (user *User) FindByEmail(email string) (error) {
 	err := database.Database.Where("email=?", email).Find(&user).Error
 	if err != nil {
-		return User{}, err
+		return err
 	}
-	return user, nil
+	return nil
 }
 
-func FindUserById(id string) (User, error) {
-	var user User
+func (user *User) FindById(id string) (error) {
 	err := database.Database.Preload("Role").Where("ID=?", id).Find(&user).Error
 	if err != nil {
-		return User{}, err
+		return err
 	}
-	return user, nil
+	return nil
 }
 
-func FindAllUsers(page *string, limit *string) ([]User, error) {
-	var users []User
-
-	intPage, _ := strconv.Atoi(*page)
-	intLimit, _ := strconv.Atoi(*limit)
+func (users Users) FindAll(page string, limit string) (error) {
+	intPage, _ := strconv.Atoi(page)
+	intLimit, _ := strconv.Atoi(limit)
 	offset := (intPage - 1) * intLimit
 
 	err := database.Database.Limit(intLimit).Offset(offset).Find(&users).Error
 	if err != nil {
-		return users, err
+		return err
 	}
-	return users, nil
+	return nil
 }
 
-func (user *User) UpdateUser() (error) {
+func (user *User) Update() (error) {
 	err := database.Database.Save(&user).Error
 	if err != nil {
 		return err
@@ -85,8 +83,8 @@ func (user *User) UpdateUser() (error) {
 	return nil
 }
 
-func DeleteUser(id string) (error) {
-	err := database.Database.Delete(User{}, "ID = ?", id).Error
+func (user *User) Delete() (error) {
+	err := database.Database.Delete(User{}, "ID = ?", user.ID).Error
 	if err != nil {
 		return err
 	}
