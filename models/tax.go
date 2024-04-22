@@ -13,7 +13,7 @@ type Tax struct {
 	Company Company `gorm:"foreignKey:CompanyID;references:ID"`
 }
 
-type Taxs []Tax
+type Taxes []Tax
 
 func (tax *Tax) Save() (error) {
 	err := database.Database.Create(&tax).Error
@@ -31,12 +31,12 @@ func (tax *Tax) FindById(id string) (error) {
 	return nil
 }
 
-func (taxs *Taxs) FindAll(page string, limit string) (error) {
+func (taxes *Taxes) FindAll(page string, limit string) (error) {
 	intPage, _ := strconv.Atoi(page)
 	intLimit, _ := strconv.Atoi(limit)
 	offset := (intPage - 1) * intLimit
 
-	err := database.Database.Limit(intLimit).Offset(offset).Find(&taxs).Error
+	err := database.Database.Limit(intLimit).Offset(offset).Find(&taxes).Error
 	if err != nil {
 		return err
 	}
